@@ -1,0 +1,13 @@
+{
+    "buildCommand": "cd security-ai-main && npm install && npm run build",
+    "outputDirectory": "security-ai-main/build",
+    "devCommand": "cd security-ai-main && npm start",
+    "installCommand": "cd security-ai-main && npm install",
+    "framework": null,
+    "rewrites": [
+        {
+            "source": "/(.*)",
+            "destination": "/index.html"
+        }
+    ]
+}
