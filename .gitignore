@@ -91,6 +91,3 @@ wasm_exec.js
 *.tar.gz
 *.zip
 checksums.txt
-
-# Nested projects
-security-ai-main/
