@@ -1,0 +1,96 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+sentinel-x
+sentinel-pro
+sentinel-ultimate
+sentinel-test
+
+# Test binaries
+*.test
+
+# Output directories
+dist/
+build/
+bin/
+
+# Go workspace
+go.work
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage
+coverage.txt
+coverage.html
+*.coverprofile
+
+# Dependency directories
+vendor/
+
+# Node modules (for tests)
+node_modules/
+package-lock.json
+
+# Python cache (for tests)
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Config with secrets
+configs/config.local.yaml
+configs/config.prod.yaml
+
+# Data directories
+data/
+*.db
+*.sqlite
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Build artifacts
+*.wasm
+wasm_exec.js
+
+# Release files
+*.tar.gz
+*.zip
+checksums.txt
+
+# Nested projects
+security-ai-main/

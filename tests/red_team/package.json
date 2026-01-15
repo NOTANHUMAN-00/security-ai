@@ -1,0 +1,23 @@
+{
+  "name": "sentinel-x-red-team",
+  "version": "1.0.0",
+  "description": "Red Team Testing Suite for Sentinel-X WAF",
+  "scripts": {
+    "test:browser": "node attack_browser.js",
+    "test:stress": "k6 run stress_test.js",
+    "test:all": "node attack_browser.js && k6 run stress_test.js"
+  },
+  "dependencies": {
+    "puppeteer": "^21.11.0",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2"
+  },
+  "keywords": [
+    "security",
+    "testing",
+    "waf",
+    "red-team"
+  ],
+  "author": "Sentinel-X",
+  "license": "MIT"
+}

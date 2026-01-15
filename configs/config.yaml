@@ -1,0 +1,220 @@
+# ===============================================
+# Sentinel-X Configuration
+# Web Application Firewall & Anti-Bot Defense
+# ===============================================
+
+server:
+  # Port to listen on for incoming requests
+  listen_port: 8080
+  # Target URL to forward legitimate traffic to
+  target_url: "http://localhost:3000"
+  # Read timeout in seconds
+  read_timeout: 30
+  # Write timeout in seconds
+  write_timeout: 30
+  # Enable TLS/HTTPS
+  tls_enabled: false
+  tls_cert_path: "./certs/server.crt"
+  tls_key_path: "./certs/server.key"
+
+# Protection level: low, medium, high, paranoid
+protection_level: high
+
+# Proof of Work Configuration (ENHANCED with Argon2)
+pow:
+  enabled: true
+  
+  # Algorithm: "argon2" (memory-hard, recommended) or "sha256" (CPU only)
+  algorithm: argon2
+  
+  # Base difficulty: number of trailing zeros required (used for SHA256 fallback)
+  # Argon2 uses memory/time parameters instead
+  difficulty: 4
+  
+  # Salt/challenge expiry in seconds (TIME-BOUND tokens)
+  # Challenges older than this are rejected
+  salt_expiry: 30
+  
+  # Bypass trusted IPs
+  bypass_trusted_ips: true
+  
+  # Enable dynamic difficulty adjustment based on risk score
+  dynamic_difficulty: true
+  
+  # Argon2 Parameters (for "minimal" risk level)
+  # Higher risk levels automatically increase these
+  argon2:
+    time: 2       # Iterations (increases for higher risk)
+    memory: 8192  # Memory in KB (increases for higher risk)
+    threads: 1    # Parallelism
+    key_length: 32
+  
+  # Dynamic difficulty multipliers by risk level
+  # These multiply the base Argon2 time parameter
+  difficulty_levels:
+    minimal: 1    # ~100ms solve time
+    low: 2        # ~200ms
+    medium: 3     # ~500ms
+    high: 4       # ~1s
+    extreme: 6    # ~3s
+    attack: 8     # ~5s+ (auto-enabled under attack)
+
+# Rate Limiting Configuration
+rate_limit:
+  enabled: true
+  # Requests per second per IP
+  requests_per_second: 10
+  # Burst limit
+  burst: 50
+  # Block duration in seconds when limit exceeded
+  block_duration: 300
+
+# Bot Detection Configuration
+bot_detection:
+  enabled: true
+  # Risk score threshold (0-100, requests above this are blocked)
+  risk_threshold: 70
+  # Enable TLS/JA3 fingerprinting
+  ja3_fingerprinting: true
+  # Enable browser fingerprint validation
+  browser_fingerprinting: true
+
+# Honeypot Configuration
+honeypot:
+  enabled: true
+  # Field names for invisible honeypot inputs
+  field_names:
+    - "website_url"
+    - "user_homepage"
+    - "contact_website"
+
+# GeoIP Configuration & Geo-Fencing
+geoip:
+  enabled: false
+  
+  # Path to MaxMind GeoLite2 databases
+  # Download from: https://dev.maxmind.com/geoip/geolite2-free-geolocation-data
+  database_path: "./data/GeoLite2-City.mmdb"
+  asn_database_path: "./data/GeoLite2-ASN.mmdb"
+  
+  # Blocked countries (ISO 3166-1 alpha-2 codes)
+  # Examples: "CN", "RU", "KP" (North Korea), "IR" (Iran)
+  blocked_countries:
+    # - "KP"  # North Korea
+    # - "XX"  # Example
+  
+  # Allowed countries (WHITELIST MODE)
+  # If set, ONLY these countries are allowed (all others blocked)
+  allowed_countries: []
+  # Example for US-only:
+  # allowed_countries:
+  #   - "US"
+  #   - "CA"
+  
+  # Block Cloud Providers / Data Centers
+  # Blocks: AWS, Azure, GCP, DigitalOcean, Linode, Vultr, OVH, Hetzner, etc.
+  block_data_centers: false
+  
+  # Block Tor exit nodes
+  block_tor: false
+  
+  # Block known anonymous proxies
+  block_proxies: false
+  
+  # Block specific ASNs (Autonomous System Numbers)
+  # Lookup ASNs at: https://bgp.he.net/
+  blocked_asns: []
+  # Examples:
+  # blocked_asns:
+  #   - 16509  # Amazon AWS
+  #   - 8075   # Microsoft Azure
+  #   - 15169  # Google Cloud
+
+# Redis Configuration (optional, falls back to in-memory)
+redis:
+  enabled: false
+  address: "localhost:6379"
+  password: ""
+  db: 0
+
+# Logging Configuration
+logging:
+  level: "info"  # debug, info, warn, error
+  format: "json"  # json or text
+  output: "stdout"  # stdout or file path
+
+# Trusted IPs (bypass all checks)
+trusted_ips:
+  - "127.0.0.1"
+  - "::1"
+
+# Known bot signatures to block
+blocked_user_agents:
+  - "python-requests"
+  - "curl"
+  - "wget"
+  - "scrapy"
+  - "httpclient"
+  - "java/"
+  - "libwww"
+  - "lwp-trivial"
+
+# Blocked headers that indicate automated requests
+suspicious_headers:
+  - "X-Forwarded-For-Original"
+  - "X-Real-Ip-Original"
+
+# ==============================================
+# PRODUCTION HARDENING SETTINGS
+# ==============================================
+
+hardening:
+  # Slowloris Protection
+  # Maximum time (in seconds) to wait for request headers
+  # Connections sending headers slower than this are terminated
+  read_header_timeout: 2
+  
+  # Maximum request body size in bytes (10MB default)
+  # Requests larger than this are rejected with 413 error
+  max_request_body_size: 10485760
+  
+  # Maximum concurrent connections (0 = unlimited)
+  # Excess connections get 503 Service Unavailable
+  max_connections: 10000
+  
+  # Per-request timeout in seconds
+  # Requests taking longer are terminated
+  request_timeout: 60
+  
+  # Maximum header size in bytes (1MB default)
+  max_header_bytes: 1048576
+  
+  # Enable enhanced panic recovery with statistics
+  enhanced_recovery: true
+  
+  # Enable header sanitization (strip spoofable headers)
+  # CRITICAL: Should always be true in production
+  sanitize_headers: true
+  
+  # Allowed hosts (leave empty to allow all)
+  # Helps prevent Host header injection attacks
+  allowed_hosts: []
+  # Example:
+  # allowed_hosts:
+  #   - "example.com"
+  #   - "www.example.com"
+  #   - "api.example.com"
+
+# Headers that will be stripped from incoming requests
+# These can be spoofed by attackers to bypass security
+stripped_headers:
+  - "X-Forwarded-For"
+  - "X-Real-IP"
+  - "X-Client-IP"
+  - "X-Originating-IP"
+  - "CF-Connecting-IP"
+  - "True-Client-IP"
+  - "Forwarded"
+  - "X-Sentinel-Score"
+  - "X-Sentinel-Verified"
+  - "X-Original-URL"

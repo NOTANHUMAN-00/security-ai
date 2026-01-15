@@ -1,0 +1,153 @@
+# ==============================================================================
+# SENTINEL-X DOCKER COMPOSE
+# ==============================================================================
+#
+# Drop this into your existing docker-compose.yml to protect your app!
+#
+# Quick Start:
+#   docker-compose up -d
+#
+# ==============================================================================
+
+version: '3.8'
+
+services:
+  # ==========================================================================
+  # 🛡️ SENTINEL-X WAF - Your Anti-Bot Protection Layer
+  # ==========================================================================
+  sentinel-x:
+    build: .
+    # Or use pre-built image:
+    # image: ghcr.io/your-username/sentinel-x:latest
+    container_name: sentinel-x
+    restart: unless-stopped
+    ports:
+      - "80:8080"      # Public HTTP (visitors access this)
+      - "443:8443"     # Public HTTPS (if using TLS)
+    environment:
+      # Your backend app URL (internal Docker network)
+      - TARGET_URL=http://my-web-app:3000
+      
+      # Protection level: low, medium, high, paranoid
+      - PROTECTION_LEVEL=high
+      
+      # Redis for persistent bans (optional)
+      - REDIS_URL=redis://redis:6379
+      
+      # Dashboard auth (change these!)
+      - DASHBOARD_USER=admin
+      - DASHBOARD_PASS=changeme123
+      
+      # P2P threat sharing (optional)
+      - P2P_ENABLED=true
+      
+      # Webhook alerts (optional)
+      # - DISCORD_WEBHOOK=https://discord.com/api/webhooks/...
+      # - SLACK_WEBHOOK=https://hooks.slack.com/...
+      
+    volumes:
+      # Persist ban lists and fingerprints
+      - sentinel-data:/app/data
+      # Custom config (optional)
+      - ./configs/config.yaml:/app/configs/config.yaml:ro
+    depends_on:
+      - redis
+      - my-web-app
+    networks:
+      - sentinel-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/sentinel/stats"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # ==========================================================================
+  # 📦 YOUR APPLICATION (Example - Replace with your actual app)
+  # ==========================================================================
+  my-web-app:
+    image: nginx:alpine
+    container_name: my-web-app
+    # ⚠️ NOTICE: No ports exposed to host!
+    # Only Sentinel-X can talk to it through Docker network.
+    # This means bots CANNOT bypass Sentinel-X.
+    volumes:
+      - ./your-app:/usr/share/nginx/html:ro
+    networks:
+      - sentinel-network
+    # Example for Node.js app:
+    # image: node:18-alpine
+    # working_dir: /app
+    # volumes:
+    #   - ./my-app:/app
+    # command: npm start
+
+  # ==========================================================================
+  # 🗄️ REDIS - For Persistent Bans & Session Storage
+  # ==========================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: sentinel-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis-data:/data
+    networks:
+      - sentinel-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ==========================================================================
+  # 📊 OPTIONAL: Prometheus Metrics Exporter
+  # ==========================================================================
+  # prometheus:
+  #   image: prom/prometheus:latest
+  #   container_name: sentinel-prometheus
+  #   volumes:
+  #     - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+  #   ports:
+  #     - "9090:9090"
+  #   networks:
+  #     - sentinel-network
+
+# ==============================================================================
+# VOLUMES
+# ==============================================================================
+volumes:
+  sentinel-data:
+    driver: local
+  redis-data:
+    driver: local
+
+# ==============================================================================
+# NETWORKS
+# ==============================================================================
+networks:
+  sentinel-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
+
+# ==============================================================================
+# USAGE EXAMPLES:
+# ==============================================================================
+#
+# 1. Start everything:
+#    docker-compose up -d
+#
+# 2. View logs:
+#    docker-compose logs -f sentinel-x
+#
+# 3. Check stats:
+#    curl http://localhost:80/sentinel/stats
+#
+# 4. Stop everything:
+#    docker-compose down
+#
+# 5. Rebuild after code changes:
+#    docker-compose up -d --build
+#
+# ==============================================================================
