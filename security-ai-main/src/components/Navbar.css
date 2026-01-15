@@ -168,6 +168,33 @@
     cursor: default;
 }
 
+/* GitHub Button with Flowing Border */
+.navbar__github-wrapper {
+    position: relative;
+    padding: 2px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.navbar__github-btn {
+    display: block;
+    padding: 10px 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--white);
+    background: var(--black);
+    border-radius: 8px;
+    position: relative;
+    z-index: 1;
+    cursor: pointer;
+    transition: var(--transition-base);
+}
+
+.navbar__github-btn:hover {
+    color: var(--silver);
+}
+
+
 /* Flowing line animation around button */
 .navbar__flowing-line {
     position: absolute;
