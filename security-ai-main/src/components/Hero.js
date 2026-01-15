@@ -53,25 +53,6 @@ const Hero = () => {
                             Watch Demo
                         </button>
                     </div>
-
-                    {/* Stats with animated line on left */}
-                    <div className="hero__stats animate-fadeInUp animate-delay-3">
-                        <div className="hero__stats-line"></div>
-                        <div className="hero__stat">
-                            <span className="hero__stat-value">10M+</span>
-                            <span className="hero__stat-label">Threats Blocked</span>
-                        </div>
-                        <div className="hero__stat-divider"></div>
-                        <div className="hero__stat">
-                            <span className="hero__stat-value">&lt;2ms</span>
-                            <span className="hero__stat-label">Latency</span>
-                        </div>
-                        <div className="hero__stat-divider"></div>
-                        <div className="hero__stat">
-                            <span className="hero__stat-value">99.99%</span>
-                            <span className="hero__stat-label">Accuracy</span>
-                        </div>
-                    </div>
                 </div>
 
                 {/* Hero Image */}
