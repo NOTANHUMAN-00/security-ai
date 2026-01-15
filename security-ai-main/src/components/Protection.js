@@ -100,12 +100,14 @@ const Protection = () => {
                             Sentinel-X is free and open source. Deploy it now or contribute to the project on GitHub.
                         </p>
                         <div className="protection__cta-buttons">
-                            <a href="#start" className="btn btn-primary btn-large btn-coming-soon">
-                                Coming Soon
+                            <a
+                                href="https://github.com/NOTANHUMAN-00/security-ai"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="btn btn-primary btn-large"
+                            >
+                                Contribute on GitHub
                             </a>
-                            <span className="btn btn-secondary btn-large btn-disabled">
-                                ⭐ Star on GitHub (Coming Soon)
-                            </span>
                         </div>
                     </div>
                 </div>

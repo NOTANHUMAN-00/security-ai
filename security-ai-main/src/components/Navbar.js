@@ -41,14 +41,17 @@ const Navbar = () => {
 
                 {/* CTA Buttons */}
                 <div className="navbar__cta">
-                    <a
-                        href="https://github.com/NOTANHUMAN-00/security-ai"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="btn btn-primary"
-                    >
-                        Contribute on GitHub
-                    </a>
+                    <div className="navbar__github-wrapper">
+                        <a
+                            href="https://github.com/NOTANHUMAN-00/security-ai"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="navbar__github-btn"
+                        >
+                            Contribute on GitHub
+                        </a>
+                        <div className="navbar__flowing-line"></div>
+                    </div>
                 </div>
 
                 {/* Mobile Toggle */}
