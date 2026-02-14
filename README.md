@@ -593,7 +593,7 @@ Found a bug? Have a feature request? [Open an issue](https://github.com/NOTANHUM
 
 If you discover a security vulnerability, please **DO NOT** open a public issue. Instead:
 
-1. Email: saifeeleap@gmail.com
+1. Email: ringpower@tutamail.com
 2. Include detailed description and PoC if possible
 3. Allow time for patch development before disclosure
 
